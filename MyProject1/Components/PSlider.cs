@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 using System.Linq;
+using System.Collections;
+using System.Globalization;
 
 using Grasshopper;
 using Grasshopper.GUI;
@@ -16,8 +18,10 @@ using Lab_Mouse.Components;
 
 
 
+
 namespace Lab_Mouse.Components
 {
+
     public class PSlider : Grasshopper.Kernel.Special.GH_NumberSlider
     {
         /// <summary>
@@ -30,6 +34,9 @@ namespace Lab_Mouse.Components
         /// 
 
         public List<double> probabilities;
+        // Rui 
+        // Temporary storage for PD
+        public string tempPD;
         public float max;
         public float min;
         public string draw_flag;
@@ -53,21 +60,75 @@ namespace Lab_Mouse.Components
 
         public override GH_Exposure Exposure
         {
-            get { return GH_Exposure.primary; }
+            get;
+            // { return GH_Exposure.primary; }
         }
 
         public override void CreateAttributes()
         {
             {
-                this.m_attributes = (IGH_Attributes)new PSliderAttributes(this, probabilities);
+                this.m_attributes = (IGH_Attributes)new PSliderAttributes(this, this.probabilities);
             }
         }
+
+        //protected override void SolveInstance(IGH_DataAccess DA)
+        //{}
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             menu.Items.Add("Histogram", null, menuItemHisto);
             menu.Items.Add("Smooth", null, menuItemSmooth);
+            // Rui
+            // additional dropdown menu for custom PD
+            ToolStripMenuItem PDDropdown = GH_DocumentObject.Menu_AppendItem(menu, "Custom PD");
+
+            Menu_AppendTextItem(PDDropdown.DropDown,
+                                "Custom PD",
+                                null,
+                                new GH_MenuTextBox.TextChangedEventHandler(updatePD),
+                                true);
+
+            PDDropdown.DropDown.Items[1].Click += (obj, e) => OK_Click(obj, e);
+            PDDropdown.DropDown.Items[2].Click += (obj, e) => Cancel_Click(obj, e);
+
             base.AppendAdditionalMenuItems(menu);
+        }
+
+
+        // Rui
+        // parse input PD and update probability
+        private void OK_Click(object sender, EventArgs e)
+        {
+            //Rhino.RhinoApp.WriteLine(this.tempPD);
+            string[] values = this.tempPD.Split(',');
+            List<double> tempPDList = new List<double>();
+
+            for (int i=0; i<values.Length; i++)
+            {
+                tempPDList.Add(Double.Parse(values[i], CultureInfo.InvariantCulture));
+            }
+
+            this.probabilities = tempPDList;
+            for (int j = 0; j< this.probabilities.Count; j++)
+            {
+                Rhino.RhinoApp.WriteLine(this.probabilities[j].ToString());
+            }
+
+            ExpireSolution(true);
+        }
+
+        // Rui
+        // cancel input even
+        private void Cancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        // Rui
+        // store PD input
+        private void updatePD(object sender, string text)
+        {
+            this.tempPD = text;
         }
 
         public void menuItemHisto(object sender, EventArgs e)
@@ -128,10 +189,11 @@ namespace Lab_Mouse.Components
         PSlider own;
         // private float minimum;
 
+
         public PSliderAttributes(PSlider owner, List<double> probabs) :
           base(owner)
         {
-            probabilities = probabs;
+            //probabilities = owner.probabilities;
             own = owner;
         }
 
@@ -141,11 +203,11 @@ namespace Lab_Mouse.Components
             List<List<float>> bin_ranges = new List<List<float>>();
             float max = (float)this.Owner.Slider.Maximum;
             float min = (float)this.Owner.Slider.Minimum;
-            float bin_size = (max - min) / this.probabilities.Count;
+            float bin_size = (max - min) / own.probabilities.Count;
             float returned_p = 0;
 
             float counter = min;
-            for (int i = 0; i < this.probabilities.Count; i++)
+            for (int i = 0; i < own.probabilities.Count; i++)
             {
 
                 List<float> t = new List<float> { counter, counter + bin_size };
@@ -159,7 +221,7 @@ namespace Lab_Mouse.Components
             {
                 if (val > bin_ranges[i][0] && val <= bin_ranges[i][1])
                 {
-                    returned_p = (float)this.probabilities[i];
+                    returned_p = (float)own.probabilities[i];
                 }
             }
             return returned_p;
@@ -216,7 +278,7 @@ namespace Lab_Mouse.Components
             points[0] = new PointF(this.Pivot.X + width_nickname, this.Pivot.Y - 7);
             points[1] = new PointF(this.Pivot.X + (Bounds.Width) - 11, this.Pivot.Y - 7);
 
-            if (probabilities.Count != 0)
+            if (Probabilities.Count != 0)
             {
                 for (int i = 0; i < Probabilities.Count; i++)
                 {
@@ -249,7 +311,7 @@ namespace Lab_Mouse.Components
             points[1] = new PointF(this.Pivot.X + (Bounds.Width) - 11, this.Pivot.Y - 7);
 
 
-            if (probabilities.Count != 0)
+            if (Probabilities.Count != 0)
             {
                 int count = 0;
                 // routine to get drawing coordinates based on bin  probabilities
@@ -282,21 +344,21 @@ namespace Lab_Mouse.Components
                     Rhino.RhinoApp.WriteLine(i +  "double clicked!!!!");
                     int pos = rec.Length - i - 1;
 
-                    for (int j =0; j < probabilities.Count; j ++)
+                    for (int j =0; j < own.probabilities.Count; j ++)
                     {
                         if (j != pos )
                         {
-                            probabilities[j] = 0;
+                            own.probabilities[j] = 0;
                         }
                     }
 
-                    if (probabilities[pos] == 1)
+                    if (own.probabilities[pos] == 1)
                     {
-                        probabilities[pos] = 0;
+                        own.probabilities[pos] = 0;
                     }
                     else
                     {
-                        probabilities[pos] = 1;
+                        own.probabilities[pos] = 1;
                     }
                     Owner.OnDisplayExpired(true);
                     return GH_ObjectResponse.Handled;
@@ -344,9 +406,9 @@ namespace Lab_Mouse.Components
             int width = GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.Standard);
             PointF p = new PointF(this.Pivot.X + width + 19, this.Pivot.Y - 7);
 
-            List<double> probs = this.probabilities;
+            List<double> probs = own.probabilities;
 
-            PointF[] pts = getHistoPts(probs);
+            PointF[] pts = getHistoPts(own.probabilities);
 
             if (own.draw_flag == "s")
             {
@@ -382,7 +444,7 @@ namespace Lab_Mouse.Components
 
             // Rui 
             // render background bins
-            RectangleF[] backgroundBins = getBackgroundBins(probabilities);
+            RectangleF[] backgroundBins = getBackgroundBins(own.probabilities);
             graphics.DrawRectangles(pen3, backgroundBins);
             graphics.FillRectangles(sb, backgroundBins);
 
