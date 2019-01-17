@@ -82,8 +82,15 @@ namespace Lab_Mouse.Components
             // additional dropdown menu for custom PD
             ToolStripMenuItem PDDropdown = GH_DocumentObject.Menu_AppendItem(menu, "Custom PD");
 
+            string displayText  = "";
+            for (int i =0; i < this.probabilities.Count; i++)
+            {
+                displayText += this.probabilities[i].ToString();
+                displayText += " , ";
+            }
+
             Menu_AppendTextItem(PDDropdown.DropDown,
-                                "Custom PD",
+                                displayText,
                                 null,
                                 new GH_MenuTextBox.TextChangedEventHandler(updatePD),
                                 true);
