@@ -12,3 +12,10 @@ C:\Users\lirui\OneDrive\Desktop\dev\zack_gh_component_ui-master\MyProject1\obj\D
 C:\Users\lirui\OneDrive\Desktop\dev\zack_gh_component_ui-master\MyProject1\obj\Debug\MyProject1.csproj.GenerateResource.Cache
 C:\Users\lirui\OneDrive\Desktop\dev\zack_gh_component_ui-master\MyProject1\obj\Debug\Lab_Mouse.dll
 C:\Users\lirui\OneDrive\Desktop\dev\zack_gh_component_ui-master\MyProject1\obj\Debug\Lab_Mouse.pdb
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\bin\Lab_Mouse.dll
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\bin\Lab_Mouse.pdb
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\obj\Debug\MyProject1.csprojResolveAssemblyReference.cache
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\obj\Debug\Lab_Mouse.Properties.Resources.resources
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\obj\Debug\MyProject1.csproj.GenerateResource.Cache
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\obj\Debug\Lab_Mouse.dll
+D:\Desktop\dev\zack_gh_component_ui\MyProject1\obj\Debug\Lab_Mouse.pdb
