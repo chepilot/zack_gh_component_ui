@@ -23,7 +23,7 @@ namespace Lab_Mouse.Components
         /// Initializes a new instance of the MyComponent1 class.
         public List<double> probabilities;
         // default starting string, need to be the same as the default starting probability distribution
-        public string tempPD = "0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1"; 
+        public string tempPD = "0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1";
         public float max;
         public float min;
         public string draw_flag;
@@ -34,7 +34,7 @@ namespace Lab_Mouse.Components
               "Lab Mouse", "Modeling"))
         {
             // default starting distribution
-            this.probabilities = new List<double> { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }; 
+            this.probabilities = new List<double> { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
             this.draw_flag = "h";
         }
 
@@ -180,7 +180,7 @@ namespace Lab_Mouse.Components
         // padding area for mouse responsing in order to resize
         protected override Padding SizingBorders
         {
-            get { return new Padding(0,0,10,0); }
+            get { return new Padding(0, 0, 10, 0); }
         }
 
         // get points to draw polygon
@@ -190,7 +190,7 @@ namespace Lab_Mouse.Components
             int n = probabilities.Count + 4;
             PointF[] points = new PointF[n];
 
-            points[0] = new PointF(this.Pivot.X , this.Pivot.Y - 7);
+            points[0] = new PointF(this.Pivot.X, this.Pivot.Y - 7);
             points[1] = new PointF(this.Pivot.X + (Bounds.Width) - 2, this.Pivot.Y - 7);
 
 
@@ -234,7 +234,7 @@ namespace Lab_Mouse.Components
                     float bin_width = rail_width / Probabilities.Count;
 
                     backgroundBins[i] = new System.Drawing.RectangleF(
-                        (float)((this.Pivot.X ) + (bin_width * (Probabilities.Count - i - 1))),
+                        (float)((this.Pivot.X) + (bin_width * (Probabilities.Count - i - 1))),
                         (float)(this.Pivot.Y - 7 - glob.max_ht),
                         (float)bin_width,
                         (float)(glob.max_ht));
@@ -334,11 +334,13 @@ namespace Lab_Mouse.Components
             if (channel != Grasshopper.GUI.Canvas.GH_CanvasChannel.Objects)
                 return;
 
+            RenderIncomingWires(canvas.Painter, Owner.Sources, Owner.WireDisplay);
+
             GH_Palette palette = GH_Palette.Normal;
 
             //base.Render(canvas, graphics, channel);
             //Bounds = new RectangleF(this.Pivot, new SizeF(Bounds.Width, 20));
-            
+
             // Create a new Capsule 
             GH_Capsule capsule = GH_Capsule.CreateCapsule(new RectangleF(this.Pivot, new SizeF(Bounds.Width, 20)), palette);
             capsule.AddInputGrip(this.InputGrip.X, this.InputGrip.Y);
