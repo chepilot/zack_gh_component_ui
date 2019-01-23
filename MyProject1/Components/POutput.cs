@@ -244,6 +244,37 @@ namespace Lab_Mouse.Components
             return backgroundBins;
         }
 
+        // Calculate the background bays for the graph based on Probabilities 
+        // return a list of equal size rectangles as background for the render
+        private RectangleF[] getTextholder(List<double> Probabilities)
+        {
+            int n = Probabilities.Count;
+            RectangleF[] textholder = new RectangleF[n];
+
+            PointF[] points = new PointF[n];
+
+            float bin_width = (Bounds.Width-4 )/ Probabilities.Count;
+
+            Rhino.RhinoApp.WriteLine(bin_width.ToString());
+
+            points[0] = new PointF(this.Pivot.X+2, this.Pivot.Y + 62);
+            points[1] = new PointF(this.Pivot.X + (Bounds.Width) - bin_width, this.Pivot.Y + 62);
+
+            if (Probabilities.Count != 0)
+            {
+                for (int i = 0; i < Probabilities.Count; i++)
+                {
+                    textholder[i] = new System.Drawing.RectangleF(
+                        (float)((this.Pivot.X+3) + (bin_width * (Probabilities.Count - i - 1))),
+                        (float)(this.Pivot.Y + 2),
+                        (float)(bin_width-2),
+                        (float)(16));
+                }
+            }
+
+            return textholder;
+        }
+
         // this function gets the coordinates from the probabilities, (same as getPts) but draws a HISTOGRAM shape an irregular polygon from points
         private PointF[] getHistoPts(List<double> Probabilities)
 
@@ -311,6 +342,7 @@ namespace Lab_Mouse.Components
 
         // component bound wrapper
         private System.Drawing.RectangleF[] backgroundBinBounds { get; set; }
+        private System.Drawing.RectangleF[] textholderBounds { get; set; }
 
         private RectangleF _baseBounds;
         private RectangleF _extraBounds;
@@ -406,6 +438,15 @@ namespace Lab_Mouse.Components
             graphics.DrawPolygon(pen, pts);
             graphics.FillPolygon(lb, pts);
 
+            // draw text capsules
+            RectangleF[] textholderBounds = getTextholder(own.probabilities);
+            GH_Capsule[] textCapsules = new GH_Capsule[textholderBounds.Length];
+
+            for (int i =0; i < textCapsules.Length; i++)
+            {
+                textCapsules[i] = GH_Capsule.CreateTextCapsule(textholderBounds[i], textholderBounds[i], GH_Palette.Hidden, "<=" + "48.3",3,3);
+                textCapsules[i].Render(graphics, Selected, Owner.Locked, false);
+            }
         }
     }
 }
