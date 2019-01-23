@@ -382,7 +382,6 @@ namespace Lab_Mouse.Components
         protected override void Layout()
         {
             base.Layout();
-
             _baseBounds = Bounds;
 
             _extraBounds = Bounds;
@@ -398,7 +397,6 @@ namespace Lab_Mouse.Components
         // list of background bin Bounds
         private System.Drawing.RectangleF[] backgroundBinBounds { get; set;}
 
-
         // this function takes care of the drawing routines 
         protected override void Render(Grasshopper.GUI.Canvas.GH_Canvas canvas, Graphics graphics,
           Grasshopper.GUI.Canvas.GH_CanvasChannel channel)
@@ -408,9 +406,9 @@ namespace Lab_Mouse.Components
                 return;
 
             // render of original component 
-            Bounds = _baseBounds;
+            //Bounds = _baseBounds;
             base.Render(canvas, graphics, channel);
-            Bounds = _thisBounds;
+            //Bounds = _thisBounds;
 
             int width = GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.Standard);
             PointF p = new PointF(this.Pivot.X + width + 19, this.Pivot.Y - 7);

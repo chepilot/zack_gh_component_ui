@@ -149,7 +149,7 @@ namespace Lab_Mouse.Components
         public override void AddedToDocument(GH_Document document)
         {
             base.AddedToDocument(document);
-            this.Attributes.Bounds = new RectangleF(this.Attributes.Pivot, new SizeF(160, 20));
+            //this.Attributes.Bounds = new RectangleF(this.Attributes.Pivot, new SizeF(160, 20));
         }
     }
 
@@ -314,7 +314,6 @@ namespace Lab_Mouse.Components
 
         private RectangleF _baseBounds;
         private RectangleF _extraBounds;
-        private RectangleF _thisBounds;
 
         protected override void Layout()
         {
@@ -325,6 +324,7 @@ namespace Lab_Mouse.Components
             _extraBounds.Y = Bounds.Top - 60;
             _extraBounds.Height = 80;
 
+            Bounds = _extraBounds;
             // Overwrite the Bounds property to include our external button.
         }
 
@@ -337,9 +337,10 @@ namespace Lab_Mouse.Components
             GH_Palette palette = GH_Palette.Normal;
 
             //base.Render(canvas, graphics, channel);
-
+            //Bounds = new RectangleF(this.Pivot, new SizeF(Bounds.Width, 20));
+            
             // Create a new Capsule 
-            GH_Capsule capsule = GH_Capsule.CreateCapsule(_baseBounds, palette);
+            GH_Capsule capsule = GH_Capsule.CreateCapsule(new RectangleF(this.Pivot, new SizeF(Bounds.Width, 20)), palette);
             capsule.AddInputGrip(this.InputGrip.X, this.InputGrip.Y);
             capsule.AddOutputGrip(this.OutputGrip.X, this.OutputGrip.Y);
 
@@ -351,7 +352,7 @@ namespace Lab_Mouse.Components
             capsule.Dispose();
             capsule = null;
 
-            Bounds = _extraBounds;
+            //Bounds = _extraBounds;
 
             int width = GH_FontServer.StringWidth(Owner.NickName, GH_FontServer.Standard);
             PointF p = new PointF(this.Pivot.X + width + 19, this.Pivot.Y - 7);
