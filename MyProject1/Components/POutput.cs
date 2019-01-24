@@ -354,7 +354,7 @@ namespace Lab_Mouse.Components
 
             _extraBounds = Bounds;
             _extraBounds.Y = Bounds.Top - 60;
-            _extraBounds.Height = 80;
+            _extraBounds.Height = 100;
 
             Bounds = _extraBounds;
             // Overwrite the Bounds property to include our external button.
@@ -377,6 +377,17 @@ namespace Lab_Mouse.Components
             GH_Capsule capsule = GH_Capsule.CreateCapsule(new RectangleF(this.Pivot, new SizeF(Bounds.Width, 20)), palette);
             capsule.AddInputGrip(this.InputGrip.X, this.InputGrip.Y);
             capsule.AddOutputGrip(this.OutputGrip.X, this.OutputGrip.Y);
+
+            GH_Capsule message = GH_Capsule.CreateTextCapsule(
+                new RectangleF(new PointF(this.Pivot.X, this.Pivot.Y + 20), new SizeF(Bounds.Width, 20)),
+                new RectangleF(new PointF(this.Pivot.X, this.Pivot.Y + 20), new SizeF(Bounds.Width, 20)),
+                GH_Palette.Hidden,
+                "Probabilities"
+                );
+
+            message.Render(graphics, Selected, Owner.Locked, false);
+            message.Dispose();
+            message = null;
 
             //Render the capsule using the current Selection, Locked and Hidden states.
             //Integer parameters are always hidden since they cannot be drawn in the viewport.
